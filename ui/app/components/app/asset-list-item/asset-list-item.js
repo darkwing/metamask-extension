@@ -95,10 +95,10 @@ const AssetListItem = ({
       className={classnames('asset-list-item', className)}
       data-testid={dataTestId}
       title={(
-        <>
+        <button className="asset-list-item__token-button">
           <h2 className="asset-list-item__token-value">{primary}</h2>
           <h2 className="asset-list-item__token-symbol">{tokenSymbol}</h2>
-        </>
+        </button>
       )}
       titleIcon={titleIcon}
       subtitle={<h3 title={secondary}>{secondary}</h3>}

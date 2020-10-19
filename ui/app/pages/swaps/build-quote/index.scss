@@ -16,6 +16,8 @@
 
   &__content {
     display: flex;
+    max-width: 360px;
+    overflow: hidden;
   }
 
   &__dropdown-swap-to-header {

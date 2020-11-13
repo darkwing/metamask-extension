@@ -116,9 +116,7 @@ class ConnectHardwareForm extends Component {
           newState.accounts = accounts.map((account) => {
             const normalizedAddress = account.address.toLowerCase()
             const balanceValue =
-              (this.props.accounts[normalizedAddress] &&
-                this.props.accounts[normalizedAddress].balance) ||
-              null
+              this.props.accounts[normalizedAddress]?.balance || null
             account.balance = balanceValue
               ? formatBalance(balanceValue, 6)
               : '...'

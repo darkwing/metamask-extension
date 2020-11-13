@@ -392,17 +392,30 @@ export function connectHardware(deviceName, page, hdPath) {
     )
 
     let accounts
-    try {
-      accounts = await promisifiedBackground.connectHardware(
-        deviceName,
-        page,
-        hdPath,
-      )
-    } catch (error) {
-      log.error(error)
-      dispatch(displayWarning(error.message))
-      throw error
-    }
+    await new Promise(async (resolve, reject) => {
+      // Times out the attempt to connect to hardware if no hardware found
+      const timeout = setTimeout(() => {
+        const TIMEOUT_MESSAGE =
+          'Attempt to connect to hardware wallet timed out'
+        dispatch(displayWarning(TIMEOUT_MESSAGE))
+        reject({ message: TIMEOUT_MESSAGE })
+      }, 5000)
+
+      try {
+        accounts = await promisifiedBackground.connectHardware(
+          deviceName,
+          page,
+          hdPath,
+        )
+      } catch (error) {
+        log.error(error)
+        dispatch(displayWarning(error.message))
+        throw error
+      }
+      clearTimeout(timeout)
+      resolve()
+    })
+
     dispatch(hideLoadingIndication())
     await forceUpdateMetamaskState(dispatch)
 

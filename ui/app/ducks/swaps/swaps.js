@@ -420,7 +420,11 @@ export const fetchQuotesAndSetQuoteState = (
     const contractExchangeRates = getTokenExchangeRates(state);
 
     let destinationTokenAddedForSwap = false;
-    if (toTokenSymbol !== 'ETH' && !contractExchangeRates[toTokenAddress]) {
+    if (
+      toTokenAddress &&
+      toTokenSymbol !== 'ETH' &&
+      !contractExchangeRates[toTokenAddress]
+    ) {
       destinationTokenAddedForSwap = true;
       await dispatch(
         addToken(
@@ -433,6 +437,7 @@ export const fetchQuotesAndSetQuoteState = (
       );
     }
     if (
+      fromTokenAddress &&
       fromTokenSymbol !== 'ETH' &&
       !contractExchangeRates[fromTokenAddress] &&
       fromTokenBalance &&

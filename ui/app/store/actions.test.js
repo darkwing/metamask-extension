@@ -1177,7 +1177,13 @@ describe('Actions', function () {
 
       actions._setBackgroundConnection(background.getApi());
 
-      await store.dispatch(actions.addToken());
+      await store.dispatch(
+        actions.addToken({
+          address: '0x514910771af9ca656af840dff83e8264ecf986ca',
+          symbol: 'LINK',
+          decimals: 18,
+        }),
+      );
       assert(addTokenStub.calledOnce);
     });
 
@@ -1209,7 +1215,13 @@ describe('Actions', function () {
         },
       ];
 
-      await store.dispatch(actions.addToken());
+      await store.dispatch(
+        actions.addToken({
+          address: '0x514910771af9ca656af840dff83e8264ecf986ca',
+          symbol: 'LINK',
+          decimals: 18,
+        }),
+      );
 
       assert.deepStrictEqual(store.getActions(), expectedActions);
     });
@@ -1234,7 +1246,44 @@ describe('Actions', function () {
       ];
 
       try {
-        await store.dispatch(actions.addToken());
+        await store.dispatch(
+          actions.addToken({
+            symbol: '',
+            decimals: 0,
+          }),
+        );
+        assert.fail('Should have thrown error');
+      } catch (_) {
+        assert.deepEqual(store.getActions(), expectedActions);
+      }
+    });
+
+    it('errors when addToken is not provided a token address', async function () {
+      const store = mockStore();
+
+      const addTokenStub = sinon
+        .stub()
+        .callsFake((_, __, ___, ____, cb) => cb(new Error('error')));
+
+      background.getApi.returns({
+        addToken: addTokenStub,
+      });
+
+      actions._setBackgroundConnection(background.getApi());
+
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'HIDE_LOADING_INDICATION' },
+        { type: 'DISPLAY_WARNING', value: 'error' },
+      ];
+
+      try {
+        await store.dispatch(
+          actions.addToken({
+            symbol: '',
+            decimals: 0,
+          }),
+        );
         assert.fail('Should have thrown error');
       } catch (_) {
         assert.deepEqual(store.getActions(), expectedActions);

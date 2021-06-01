@@ -41,20 +41,19 @@ function defineAllTasks() {
   const staticTasks = createStaticAssetTasks({ livereload, browserPlatforms });
   const manifestTasks = createManifestTasks({
     browserPlatforms,
-    beta: IS_BETA,
+    isBeta: IS_BETA,
     betaVersionsMap: BETA_VERSIONS_MAP,
   });
   const styleTasks = createStyleTasks({ livereload });
   const scriptTasks = createScriptTasks({
     livereload,
     browserPlatforms,
-    beta: IS_BETA,
   });
 
   const { clean, reload, zip } = createEtcTasks({
     livereload,
     browserPlatforms,
-    beta: IS_BETA,
+    isBeta: IS_BETA,
     betaVersionsMap: BETA_VERSIONS_MAP,
   });
 

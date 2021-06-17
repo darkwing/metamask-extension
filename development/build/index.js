@@ -38,7 +38,11 @@ function defineAllTasks() {
   const IS_BETA = process.env.BUILD_TYPE === 'beta';
   const BETA_VERSIONS_MAP = getNextBetaVersionMap(version, browserPlatforms);
 
-  const staticTasks = createStaticAssetTasks({ livereload, browserPlatforms });
+  const staticTasks = createStaticAssetTasks({
+    livereload,
+    isBeta: IS_BETA,
+    browserPlatforms,
+  });
   const manifestTasks = createManifestTasks({
     browserPlatforms,
     isBeta: IS_BETA,

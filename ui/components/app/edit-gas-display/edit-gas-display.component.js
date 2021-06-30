@@ -28,13 +28,7 @@ export default function EditGasDisplay({
 }) {
   const t = useContext(I18nContext);
 
-  const {
-    isGasEstimatesLoading,
-    gasFeeEstimates,
-    estimatedGasFeeTimeBounds,
-  } = useGasFeeEstimates();
-
-  console.log('gasFeeEstimates', gasFeeEstimates);
+  const { isGasEstimatesLoading, gasFeeEstimates } = useGasFeeEstimates();
 
   const [warning] = useState(null);
   const [showAdvancedForm, setShowAdvancedForm] = useState(false);
@@ -46,6 +40,9 @@ export default function EditGasDisplay({
   const requireDappAcknowledgement =
     dappSuggestedGasFee && !dappSuggestedGasFeeAcknowledged;
   const [estimateToUse, setEstimateToUse] = useState('high');
+
+  const [maxPriorityFee, setMaxPriorityFee] = useState(undefined);
+  const [maxFee, setMaxFee] = useState(undefined);
 
   return (
     <div className="edit-gas-display">
@@ -101,7 +98,13 @@ export default function EditGasDisplay({
               { value: 'high', label: t('editGasHigh'), recommended: false },
             ]}
             selectedValue={estimateToUse}
-            onChange={(value) => setEstimateToUse(value)}
+            onChange={(value) => {
+              setEstimateToUse(value);
+              setMaxPriorityFee(
+                gasFeeEstimates?.[estimateToUse]?.suggestedMaxPriorityFeePerGas,
+              );
+              setMaxFee(gasFeeEstimates?.[estimateToUse]?.suggestedMaxFeePerGas);
+            }}
           />
         )}
         {!alwaysShowForm && (
@@ -122,6 +125,10 @@ export default function EditGasDisplay({
             gasFeeEstimates={gasFeeEstimates}
             estimateToUse={estimateToUse}
             isGasEstimatesLoading={isGasEstimatesLoading}
+            maxPriorityFee={maxPriorityFee}
+            setMaxPriorityFee={setMaxPriorityFee}
+            maxFee={maxFee}
+            setMaxFee={setMaxFee}
           />
         )}
       </div>

@@ -1,5 +1,12 @@
 import React, { useContext } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+
+import { getShouldShowFiat } from '../../../selectors';
+import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
+import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
+import { SECONDARY } from '../../../helpers/constants/common';
+import { decGWEIToHexWEI } from '../../../helpers/utils/conversions.util';
 
 import { I18nContext } from '../../../contexts/i18n';
 import Typography from '../../ui/typography/typography';
@@ -25,6 +32,27 @@ export default function AdvancedGasControls({
 }) {
   const t = useContext(I18nContext);
 
+  const { currency, numberOfDecimals } = useUserPreferencedCurrency(SECONDARY);
+  const showFiat = useSelector(getShouldShowFiat);
+
+  const [, maxPriorityParts] = useCurrencyDisplay(
+    decGWEIToHexWEI(maxPriorityFee * gasLimit),
+    {
+      numberOfDecimals,
+      currency,
+    },
+  );
+  const maxPriorityFeeDetail = showFiat ? maxPriorityParts.value : '';
+
+  const [, maxFeeParts] = useCurrencyDisplay(
+    decGWEIToHexWEI(maxFee * gasLimit),
+    {
+      numberOfDecimals,
+      currency,
+    },
+  );
+  const maxFeeDetail = showFiat ? maxFeeParts.value : '';
+
   return (
     <div className="advanced-gas-controls">
       <AdvancedGasControlsRow
@@ -45,6 +73,7 @@ export default function AdvancedGasControls({
               onManualChange?.();
             }}
             value={maxPriorityFee}
+            detailText={maxPriorityFeeDetail}
             titleDetailText={
               <>
                 <Typography
@@ -77,6 +106,7 @@ export default function AdvancedGasControls({
               onManualChange?.();
             }}
             value={maxFee}
+            detailText={maxFeeDetail}
             titleDetailText={
               <>
                 <Typography

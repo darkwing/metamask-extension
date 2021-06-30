@@ -45,6 +45,7 @@ export default function EditGasDisplay({
 
   const requireDappAcknowledgement =
     dappSuggestedGasFee && !dappSuggestedGasFeeAcknowledged;
+  const [estimateToUse, setEstimateToUse] = useState('high');
 
   return (
     <div className="edit-gas-display">
@@ -83,7 +84,6 @@ export default function EditGasDisplay({
         )}
 
         <TransactionTotalBanner total="" detail="" timing="" />
-
         {requireDappAcknowledgement && (
           <Button
             className="edit-gas-display__dapp-acknowledgement-button"
@@ -92,23 +92,19 @@ export default function EditGasDisplay({
             {t('gasDisplayAcknowledgeDappButtonText')}
           </Button>
         )}
-
         {!requireDappAcknowledgement && (
           <RadioGroup
             name="gas-recommendation"
             options={[
               { value: 'low', label: t('editGasLow'), recommended: false },
-              {
-                value: 'medium',
-                label: t('editGasMedium'),
-                recommended: false,
-              },
-              { value: 'high', label: t('editGasHigh'), recommended: true },
+              { value: 'medium', label: t('editGasMedium'), recommended: false },
+              { value: 'high', label: t('editGasHigh'), recommended: false },
             ]}
-            selectedValue="high"
+            selectedValue={estimateToUse}
+            onChange={(value) => setEstimateToUse(value)}
           />
         )}
-        {!requireDappAcknowledgement && !alwaysShowForm && (
+        {!alwaysShowForm && (
           <button
             className="edit-gas-display__advanced-button"
             onClick={() => setShowAdvancedForm(!showAdvancedForm)}
@@ -124,6 +120,7 @@ export default function EditGasDisplay({
         {!requireDappAcknowledgement && (alwaysShowForm || showAdvancedForm) && (
           <AdvancedGasControls
             gasFeeEstimates={gasFeeEstimates}
+            estimateToUse={estimateToUse}
             isGasEstimatesLoading={isGasEstimatesLoading}
           />
         )}

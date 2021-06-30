@@ -12,7 +12,7 @@ import AdvancedGasControlsRow from './advanced-gas-controls-row.component';
 
 export default function AdvancedGasControls({
   isGasEstimatesLoading,
-  estimateToUse = 'high',
+  estimateToUse,
   gasFeeEstimates,
 }) {
   const t = useContext(I18nContext);

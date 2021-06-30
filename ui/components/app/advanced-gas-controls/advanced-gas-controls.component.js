@@ -1,4 +1,5 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import PropTypes from 'prop-types';
 
 import { I18nContext } from '../../../contexts/i18n';
 import Typography from '../../ui/typography/typography';
@@ -9,12 +10,44 @@ import {
 } from '../../../helpers/constants/design-system';
 import AdvancedGasControlsRow from './advanced-gas-controls-row.component';
 
-export default function AdvancedGasControls() {
+export default function AdvancedGasControls({
+  isGasEstimatesLoading,
+  estimateToUse = 'high',
+  gasFeeEstimates,
+}) {
   const t = useContext(I18nContext);
 
-  const [gasLimit, setGasLimit] = useState(0);
-  const [maxPriorityFee, setMaxPriorityFee] = useState(0);
-  const [maxFee, setMaxFee] = useState(0);
+  const [gasLimit, setGasLimit] = useState(undefined);
+  const [maxPriorityFee, setMaxPriorityFee] = useState(undefined);
+  const [maxFee, setMaxFee] = useState(undefined);
+  const prevIsGasEstimatesLoading = useRef(true);
+  const prevEstimateToUse = useRef(estimateToUse);
+
+  const { suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas } =
+    gasFeeEstimates?.[estimateToUse] ?? {};
+
+  // useEffect(() => {
+  //   if (
+  //     prevIsGasEstimatesLoading.current === true &&
+  //     isGasEstimatesLoading === false
+  //   ) {
+  //     setMaxPriorityFee(suggestedMaxPriorityFeePerGas);
+  //     setMaxFee(suggestedMaxFeePerGas);
+  //   }
+  //   prevIsGasEstimatesLoading.current = isGasEstimatesLoading;
+  // }, [
+  //   isGasEstimatesLoading,
+  //   estimateToUse,
+  //   suggestedMaxPriorityFeePerGas,
+  //   suggestedMaxFeePerGas,
+  // ]);
+
+  // useEffect(() => {
+  //   if (prevEstimateToUse.current !== estimateToUse) {
+  //     setMaxFee(gasFeeEstimates?.[estimateToUse]?.suggestedMaxFeePerGas);
+  //     setMaxFee(gasFeeEstimates?.[estimateToUse]?.suggestedMaxFeePerGas);
+  //   }
+  // }, [estimateToUse, gasFeeEstimates]);
 
   // Used in legacy version
   const [gasPrice, setGasPrice] = useState(0);
@@ -35,7 +68,7 @@ export default function AdvancedGasControls() {
             titleUnit="(GWEI)"
             tooltipText=""
             onChange={setMaxPriorityFee}
-            value={maxPriorityFee}
+            value={maxPriorityFee ?? suggestedMaxPriorityFeePerGas}
             titleDetailText={
               <>
                 <Typography
@@ -50,7 +83,12 @@ export default function AdvancedGasControls() {
                   tag="span"
                   color={COLORS.UI4}
                   variant={TYPOGRAPHY.H8}
-                ></Typography>
+                >
+                  {
+                    gasFeeEstimates?.[estimateToUse]
+                      ?.suggestedMaxPriorityFeePerGas
+                  }
+                </Typography>
               </>
             }
           />
@@ -59,7 +97,7 @@ export default function AdvancedGasControls() {
             titleUnit="(GWEI)"
             tooltipText=""
             onChange={setMaxFee}
-            value={maxFee}
+            value={maxFee ?? suggestedMaxFeePerGas}
             titleDetailText={
               <>
                 <Typography
@@ -74,7 +112,9 @@ export default function AdvancedGasControls() {
                   tag="span"
                   color={COLORS.UI4}
                   variant={TYPOGRAPHY.H8}
-                ></Typography>
+                >
+                  {gasFeeEstimates?.[estimateToUse]?.suggestedMaxFeePerGas}
+                </Typography>
               </>
             }
           />
@@ -94,3 +134,19 @@ export default function AdvancedGasControls() {
     </div>
   );
 }
+
+AdvancedGasControls.propTypes = {
+  estimateToUse: PropTypes.oneOf(['high', 'medium', 'low']),
+  isGasEstimatesLoading: PropTypes.boolean,
+  gasFeeEstimates: PropTypes.oneOf([
+    PropTypes.shape({
+      gasPrice: PropTypes.string,
+    }),
+    PropTypes.shape({
+      low: PropTypes.object,
+      medium: PropTypes.object,
+      high: PropTypes.object,
+      estimatedBaseFee: PropTypes.string,
+    }),
+  ]),
+};

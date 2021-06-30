@@ -13,9 +13,10 @@ import InfoTooltip from '../../ui/info-tooltip';
 import TransactionTotalBanner from '../transaction-total-banner/transaction-total-banner.component';
 import RadioGroup from '../../ui/radio-group/radio-group.component';
 import AdvancedGasControls from '../advanced-gas-controls/advanced-gas-controls.component';
+import ActionableMessage from '../../ui/actionable-message/actionable-message';
 
 import { I18nContext } from '../../../contexts/i18n';
-import ActionableMessage from '../../ui/actionable-message/actionable-message';
+import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 
 export default function EditGasDisplay({
   alwaysShowForm,
@@ -26,6 +27,14 @@ export default function EditGasDisplay({
   dappOrigin,
 }) {
   const t = useContext(I18nContext);
+
+  const {
+    isGasEstimatesLoading,
+    gasFeeEstimates,
+    estimatedGasFeeTimeBounds,
+  } = useGasFeeEstimates();
+
+  console.log('gasFeeEstimates', gasFeeEstimates);
 
   const [warning] = useState(null);
   const [showAdvancedForm, setShowAdvancedForm] = useState(false);
@@ -112,8 +121,12 @@ export default function EditGasDisplay({
             )}
           </button>
         )}
-        {((!requireDappAcknowledgement && alwaysShowForm) ||
-          showAdvancedForm) && <AdvancedGasControls />}
+        {!requireDappAcknowledgement && (alwaysShowForm || showAdvancedForm) && (
+          <AdvancedGasControls
+            gasFeeEstimates={gasFeeEstimates}
+            isGasEstimatesLoading={isGasEstimatesLoading}
+          />
+        )}
       </div>
       {!requireDappAcknowledgement && showEducationButton && (
         <div className="edit-gas-display__education">

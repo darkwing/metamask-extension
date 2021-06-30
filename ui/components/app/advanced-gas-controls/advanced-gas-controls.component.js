@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 
 import { I18nContext } from '../../../contexts/i18n';
@@ -17,13 +17,13 @@ export default function AdvancedGasControls({
   maxFee,
   setMaxPriorityFee,
   setMaxFee,
+  onManualChange,
+  gasLimit,
+  setGasLimit,
+  gasPrice,
+  setGasPrice,
 }) {
   const t = useContext(I18nContext);
-
-  const [gasLimit, setGasLimit] = useState(undefined);
-
-  // Used in legacy version
-  const [gasPrice, setGasPrice] = useState(0);
 
   return (
     <div className="advanced-gas-controls">
@@ -42,6 +42,7 @@ export default function AdvancedGasControls({
             tooltipText=""
             onChange={(value) => {
               setMaxPriorityFee(value);
+              onManualChange?.();
             }}
             value={maxPriorityFee}
             titleDetailText={
@@ -73,6 +74,7 @@ export default function AdvancedGasControls({
             tooltipText=""
             onChange={(value) => {
               setMaxFee(value);
+              onManualChange?.();
             }}
             value={maxFee}
             titleDetailText={
@@ -129,4 +131,9 @@ AdvancedGasControls.propTypes = {
   setMaxFee: PropTypes.func,
   maxPriorityFee: PropTypes.number,
   maxFee: PropTypes.number,
+  onManualChange: PropTypes.func,
+  gasLimit: PropTypes.number,
+  setGasLimit: PropTypes.func,
+  gasPrice: PropTypes.number,
+  setGasPrice: PropTypes.func,
 };

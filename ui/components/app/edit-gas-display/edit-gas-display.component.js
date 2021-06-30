@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 
 import Button from '../../ui/button';
@@ -41,8 +41,28 @@ export default function EditGasDisplay({
     dappSuggestedGasFee && !dappSuggestedGasFeeAcknowledged;
   const [estimateToUse, setEstimateToUse] = useState('high');
 
-  const [maxPriorityFee, setMaxPriorityFee] = useState(undefined);
-  const [maxFee, setMaxFee] = useState(undefined);
+  const [maxPriorityFee, setMaxPriorityFee] = useState(
+    gasFeeEstimates?.[estimateToUse]?.suggestedMaxPriorityFeePerGas,
+  );
+  const [maxFee, setMaxFee] = useState(
+    gasFeeEstimates?.[estimateToUse]?.suggestedMaxFeePerGas,
+  );
+  const [gasLimit, setGasLimit] = useState(21000);
+  const [gasPrice, setGasPrice] = useState(0);
+
+  const prevIsGasEstimatesLoading = useRef(true);
+  useEffect(() => {
+    if (
+      prevIsGasEstimatesLoading.current === true &&
+      isGasEstimatesLoading === false &&
+      estimateToUse
+    ) {
+      setMaxPriorityFee(
+        gasFeeEstimates?.[estimateToUse]?.suggestedMaxPriorityFeePerGas,
+      );
+      setMaxFee(gasFeeEstimates?.[estimateToUse]?.suggestedMaxFeePerGas);
+    }
+  }, [isGasEstimatesLoading, estimateToUse, gasFeeEstimates]);
 
   return (
     <div className="edit-gas-display">
@@ -51,7 +71,7 @@ export default function EditGasDisplay({
           <div className="edit-gas-display__warning">
             <ActionableMessage
               className="actionable-message--warning"
-              message="Swaps are time sensitive. “Medium” is not reccomended."
+              message={warning}
             />
           </div>
         )}
@@ -101,9 +121,9 @@ export default function EditGasDisplay({
             onChange={(value) => {
               setEstimateToUse(value);
               setMaxPriorityFee(
-                gasFeeEstimates?.[estimateToUse]?.suggestedMaxPriorityFeePerGas,
+                gasFeeEstimates?.[value]?.suggestedMaxPriorityFeePerGas,
               );
-              setMaxFee(gasFeeEstimates?.[estimateToUse]?.suggestedMaxFeePerGas);
+              setMaxFee(gasFeeEstimates?.[value]?.suggestedMaxFeePerGas);
             }}
           />
         )}
@@ -129,6 +149,13 @@ export default function EditGasDisplay({
             setMaxPriorityFee={setMaxPriorityFee}
             maxFee={maxFee}
             setMaxFee={setMaxFee}
+            onManualChange={() => {
+              setEstimateToUse(undefined);
+            }}
+            gasLimit={gasLimit}
+            setGasLimit={setGasLimit}
+            gasPrice={gasPrice}
+            setGasPrice={setGasPrice}
           />
         )}
       </div>

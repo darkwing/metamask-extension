@@ -10,6 +10,8 @@ import {
 } from '../../../helpers/constants/design-system';
 import AdvancedGasControlsRow from './advanced-gas-controls-row.component';
 
+const DEFAULT_ESTIMATES_LEVEL = 'medium';
+
 export default function AdvancedGasControls({
   estimateToUse,
   gasFeeEstimates,
@@ -73,7 +75,7 @@ export default function AdvancedGasControls({
                     variant={TYPOGRAPHY.H8}
                   >
                     {
-                      gasFeeEstimates?.[estimateToUse]
+                      gasFeeEstimates?.[DEFAULT_ESTIMATES_LEVEL]
                         ?.suggestedMaxPriorityFeePerGas
                     }
                   </Typography>
@@ -108,7 +110,10 @@ export default function AdvancedGasControls({
                     color={COLORS.UI4}
                     variant={TYPOGRAPHY.H8}
                   >
-                    {gasFeeEstimates?.[estimateToUse]?.suggestedMaxFeePerGas}
+                    {
+                      gasFeeEstimates?.[DEFAULT_ESTIMATES_LEVEL]
+                        ?.suggestedMaxFeePerGas
+                    }
                   </Typography>
                 </>
               )

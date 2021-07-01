@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import Button from '../../ui/button';
@@ -17,6 +18,12 @@ import ActionableMessage from '../../ui/actionable-message/actionable-message';
 
 import { I18nContext } from '../../../contexts/i18n';
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
+
+import { getShouldShowFiat } from '../../../selectors';
+import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
+import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
+import { SECONDARY } from '../../../helpers/constants/common';
+import { decGWEIToHexWEI } from '../../../helpers/utils/conversions.util';
 
 export default function EditGasDisplay({
   alwaysShowForm,
@@ -64,6 +71,27 @@ export default function EditGasDisplay({
     }
   }, [isGasEstimatesLoading, estimateToUse, gasFeeEstimates]);
 
+  const { currency, numberOfDecimals } = useUserPreferencedCurrency(SECONDARY);
+  const showFiat = useSelector(getShouldShowFiat);
+
+  const [, maxPriorityParts] = useCurrencyDisplay(
+    decGWEIToHexWEI(maxPriorityFee * gasLimit),
+    {
+      numberOfDecimals,
+      currency,
+    },
+  );
+  const maxPriorityFeeFiat = showFiat ? maxPriorityParts.value : '';
+
+  const [, maxFeeParts] = useCurrencyDisplay(
+    decGWEIToHexWEI(maxFee * gasLimit),
+    {
+      numberOfDecimals,
+      currency,
+    },
+  );
+  const maxFeeFiat = showFiat ? maxFeeParts.value : '';
+
   return (
     <div className="edit-gas-display">
       <div className="edit-gas-display__content">
@@ -100,7 +128,7 @@ export default function EditGasDisplay({
           </div>
         )}
 
-        <TransactionTotalBanner total="" detail="" timing="" />
+        <TransactionTotalBanner total={maxFeeFiat} detail="" timing="" />
         {requireDappAcknowledgement && (
           <Button
             className="edit-gas-display__dapp-acknowledgement-button"
@@ -145,17 +173,19 @@ export default function EditGasDisplay({
             gasFeeEstimates={gasFeeEstimates}
             estimateToUse={estimateToUse}
             isGasEstimatesLoading={isGasEstimatesLoading}
-            maxPriorityFee={maxPriorityFee}
-            setMaxPriorityFee={setMaxPriorityFee}
-            maxFee={maxFee}
-            setMaxFee={setMaxFee}
             onManualChange={() => {
               setEstimateToUse(undefined);
             }}
             gasLimit={gasLimit}
             setGasLimit={setGasLimit}
+            maxPriorityFee={maxPriorityFee}
+            setMaxPriorityFee={setMaxPriorityFee}
+            maxFee={maxFee}
+            setMaxFee={setMaxFee}
             gasPrice={gasPrice}
             setGasPrice={setGasPrice}
+            maxPriorityFeeFiat={maxPriorityFeeFiat}
+            maxFeeFiat={maxFeeFiat}
           />
         )}
       </div>

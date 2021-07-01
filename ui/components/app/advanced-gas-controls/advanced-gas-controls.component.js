@@ -1,12 +1,5 @@
 import React, { useContext } from 'react';
-import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-
-import { getShouldShowFiat } from '../../../selectors';
-import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
-import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
-import { SECONDARY } from '../../../helpers/constants/common';
-import { decGWEIToHexWEI } from '../../../helpers/utils/conversions.util';
 
 import { I18nContext } from '../../../contexts/i18n';
 import Typography from '../../ui/typography/typography';
@@ -29,29 +22,15 @@ export default function AdvancedGasControls({
   setGasLimit,
   gasPrice,
   setGasPrice,
+  maxPriorityFeeFiat,
+  maxFeeFiat,
 }) {
   const t = useContext(I18nContext);
 
-  const { currency, numberOfDecimals } = useUserPreferencedCurrency(SECONDARY);
-  const showFiat = useSelector(getShouldShowFiat);
-
-  const [, maxPriorityParts] = useCurrencyDisplay(
-    decGWEIToHexWEI(maxPriorityFee * gasLimit),
-    {
-      numberOfDecimals,
-      currency,
-    },
-  );
-  const maxPriorityFeeDetail = showFiat ? maxPriorityParts.value : '';
-
-  const [, maxFeeParts] = useCurrencyDisplay(
-    decGWEIToHexWEI(maxFee * gasLimit),
-    {
-      numberOfDecimals,
-      currency,
-    },
-  );
-  const maxFeeDetail = showFiat ? maxFeeParts.value : '';
+  const suggestedMaxPriorityFeePerGas =
+    gasFeeEstimates?.[estimateToUse]?.suggestedMaxPriorityFeePerGas;
+  const suggestedMaxFeePerGas =
+    gasFeeEstimates?.[estimateToUse]?.suggestedMaxFeePerGas;
 
   return (
     <div className="advanced-gas-controls">
@@ -61,6 +40,7 @@ export default function AdvancedGasControls({
         tooltipText=""
         titleDetailText=""
         value={gasLimit}
+        autoFocus
       />
       {process.env.SHOW_EIP_1559_UI ? (
         <>
@@ -73,28 +53,30 @@ export default function AdvancedGasControls({
               onManualChange?.();
             }}
             value={maxPriorityFee}
-            detailText={maxPriorityFeeDetail}
+            detailText={maxPriorityFeeFiat}
             titleDetailText={
-              <>
-                <Typography
-                  tag="span"
-                  color={COLORS.UI4}
-                  variant={TYPOGRAPHY.H8}
-                  fontWeight={FONT_WEIGHT.BOLD}
-                >
-                  {t('gasFeeEstimate')}:
-                </Typography>{' '}
-                <Typography
-                  tag="span"
-                  color={COLORS.UI4}
-                  variant={TYPOGRAPHY.H8}
-                >
-                  {
-                    gasFeeEstimates?.[estimateToUse]
-                      ?.suggestedMaxPriorityFeePerGas
-                  }
-                </Typography>
-              </>
+              suggestedMaxPriorityFeePerGas && (
+                <>
+                  <Typography
+                    tag="span"
+                    color={COLORS.UI4}
+                    variant={TYPOGRAPHY.H8}
+                    fontWeight={FONT_WEIGHT.BOLD}
+                  >
+                    {t('gasFeeEstimate')}:
+                  </Typography>{' '}
+                  <Typography
+                    tag="span"
+                    color={COLORS.UI4}
+                    variant={TYPOGRAPHY.H8}
+                  >
+                    {
+                      gasFeeEstimates?.[estimateToUse]
+                        ?.suggestedMaxPriorityFeePerGas
+                    }
+                  </Typography>
+                </>
+              )
             }
           />
           <AdvancedGasControlsRow
@@ -106,25 +88,27 @@ export default function AdvancedGasControls({
               onManualChange?.();
             }}
             value={maxFee}
-            detailText={maxFeeDetail}
+            detailText={maxFeeFiat}
             titleDetailText={
-              <>
-                <Typography
-                  tag="span"
-                  color={COLORS.UI4}
-                  variant={TYPOGRAPHY.H8}
-                  fontWeight={FONT_WEIGHT.BOLD}
-                >
-                  {t('gasFeeEstimate')}:
-                </Typography>{' '}
-                <Typography
-                  tag="span"
-                  color={COLORS.UI4}
-                  variant={TYPOGRAPHY.H8}
-                >
-                  {gasFeeEstimates?.[estimateToUse]?.suggestedMaxFeePerGas}
-                </Typography>
-              </>
+              suggestedMaxFeePerGas && (
+                <>
+                  <Typography
+                    tag="span"
+                    color={COLORS.UI4}
+                    variant={TYPOGRAPHY.H8}
+                    fontWeight={FONT_WEIGHT.BOLD}
+                  >
+                    {t('gasFeeEstimate')}:
+                  </Typography>{' '}
+                  <Typography
+                    tag="span"
+                    color={COLORS.UI4}
+                    variant={TYPOGRAPHY.H8}
+                  >
+                    {gasFeeEstimates?.[estimateToUse]?.suggestedMaxFeePerGas}
+                  </Typography>
+                </>
+              )
             }
           />
         </>
@@ -166,4 +150,6 @@ AdvancedGasControls.propTypes = {
   setGasLimit: PropTypes.func,
   gasPrice: PropTypes.number,
   setGasPrice: PropTypes.func,
+  maxPriorityFeeFiat: PropTypes.string,
+  maxFeeFiat: PropTypes.string,
 };

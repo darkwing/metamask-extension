@@ -49,7 +49,7 @@ export default function EditGasDisplay({
 
   const requireDappAcknowledgement =
     dappSuggestedGasFee && !dappSuggestedGasFeeAcknowledged;
-  const [estimateToUse, setEstimateToUse] = useState('high');
+  const [estimateToUse, setEstimateToUse] = useState('medium');
 
   const [maxPriorityFee, setMaxPriorityFee] = useState(
     gasFeeEstimates?.[estimateToUse]?.suggestedMaxPriorityFeePerGas,

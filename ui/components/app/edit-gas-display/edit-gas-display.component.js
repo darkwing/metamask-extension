@@ -116,6 +116,21 @@ export default function EditGasDisplay({
   );
   const maxFeeFiat = showFiat ? maxFeeParts.value : '';
 
+  // The big number should be `(estimatedBaseFee + (customMaxPriorityFeePerGas || selectedFeeEstimate.suggestedMaxPriorityFeePerGas)) * gasLimit` and then converted to fiat
+  const [, bannerTotalParts] = useCurrencyDisplay(
+    decGWEIToHexWEI(
+      Number(gasFeeEstimates.estimatedBaseFee) +
+        (Number(maxPriorityFee) ||
+          Number(gasFeeEstimates?.[estimateToUse]?.suggestedMaxFeePerGas)) *
+          gasLimit,
+    ),
+    {
+      numberOfDecimals,
+      currency,
+    },
+  );
+  const bannerTotal = showFiat ? bannerTotalParts.value : '';
+
   return (
     <div className="edit-gas-display">
       <div className="edit-gas-display__content">
@@ -152,7 +167,11 @@ export default function EditGasDisplay({
           </div>
         )}
 
-        <TransactionTotalBanner total={maxFeeFiat} detail="" timing="" />
+        <TransactionTotalBanner
+          total={bannerTotal}
+          detail={t('editGasTotalBannerSubtitle', [maxFeeFiat])}
+          timing=""
+        />
         {requireDappAcknowledgement && (
           <Button
             className="edit-gas-display__dapp-acknowledgement-button"
@@ -177,7 +196,11 @@ export default function EditGasDisplay({
             name="gas-recommendation"
             options={[
               { value: 'low', label: t('editGasLow'), recommended: false },
-              { value: 'medium', label: t('editGasMedium'), recommended: false },
+              {
+                value: 'medium',
+                label: t('editGasMedium'),
+                recommended: false,
+              },
               { value: 'high', label: t('editGasHigh'), recommended: false },
             ]}
             selectedValue={estimateToUse}

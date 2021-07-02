@@ -662,6 +662,10 @@
   "editGasTooLow": {
     "message": "Unknown processing time"
   },
+  "editGasTotalBannerSubtitle": {
+    "message": "Up to $1",
+    "display": "$1 represents a fiat value"
+  },
   "editNonceField": {
     "message": "Edit Nonce"
   },

@@ -23,7 +23,7 @@ import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 import { getShouldShowFiat } from '../../../selectors';
 import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
-import { SECONDARY } from '../../../helpers/constants/common';
+import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { decGWEIToHexWEI } from '../../../helpers/utils/conversions.util';
 
 export default function EditGasDisplay({
@@ -96,6 +96,10 @@ export default function EditGasDisplay({
   }, [maxPriorityFee, gasFeeEstimates, maxFee, isGasEstimatesLoading, t]);
 
   const { currency, numberOfDecimals } = useUserPreferencedCurrency(SECONDARY);
+  const {
+    currency: primaryCurrency,
+    numberOfDecimals: primaryNumberOfDecimals,
+  } = useUserPreferencedCurrency(PRIMARY);
   const showFiat = useSelector(getShouldShowFiat);
 
   const [, maxPriorityParts] = useCurrencyDisplay(
@@ -107,14 +111,16 @@ export default function EditGasDisplay({
   );
   const maxPriorityFeeFiat = showFiat ? maxPriorityParts.value : '';
 
-  const [, maxFeeParts] = useCurrencyDisplay(
-    decGWEIToHexWEI(maxFee * gasLimit),
-    {
-      numberOfDecimals,
-      currency,
-    },
-  );
-  const maxFeeFiat = showFiat ? maxFeeParts.value : '';
+  const maxFeeCalculation = decGWEIToHexWEI(maxFee * gasLimit);
+  const [, maxFeeParts] = useCurrencyDisplay(maxFeeCalculation, {
+    numberOfDecimals,
+    currency,
+  });
+  const maxFeeFiat = maxFeeParts.value;
+  const [maxFeePrimary] = useCurrencyDisplay(maxFeeCalculation, {
+    numberOfDecimals: primaryNumberOfDecimals,
+    currency: primaryCurrency,
+  });
 
   // The big number should be `(estimatedBaseFee + (customMaxPriorityFeePerGas || selectedFeeEstimate.suggestedMaxPriorityFeePerGas)) * gasLimit` and then converted to fiat
   const [, bannerTotalParts] = useCurrencyDisplay(
@@ -129,7 +135,7 @@ export default function EditGasDisplay({
       currency,
     },
   );
-  const bannerTotal = showFiat ? bannerTotalParts.value : '';
+  const bannerTotal = bannerTotalParts.value;
 
   return (
     <div className="edit-gas-display">
@@ -169,7 +175,18 @@ export default function EditGasDisplay({
 
         <TransactionTotalBanner
           total={bannerTotal}
-          detail={t('editGasTotalBannerSubtitle', [maxFeeFiat])}
+          detail={t('editGasTotalBannerSubtitle', [
+            <Typography
+              fontWeight={FONT_WEIGHT.BOLD}
+              tag="span"
+              key="secondary"
+            >
+              {maxFeeFiat}
+            </Typography>,
+            <Typography tag="span" key="primary">
+              {maxFeePrimary}
+            </Typography>,
+          ])}
           timing=""
         />
         {requireDappAcknowledgement && (
@@ -243,7 +260,7 @@ export default function EditGasDisplay({
             gasPrice={gasPrice}
             setGasPrice={setGasPrice}
             maxPriorityFeeFiat={maxPriorityFeeFiat}
-            maxFeeFiat={maxFeeFiat}
+            maxFeeFiat={showFiat ? maxFeeFiat : ''}
             maxPriorityFeeError={maxPriorityFeeError}
             maxFeeError={maxFeeError}
           />

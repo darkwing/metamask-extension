@@ -33,6 +33,7 @@ export default function EditGasDisplay({
   onEducationClick,
   dappSuggestedGasFee,
   dappOrigin,
+  defaultEstimateToUse = 'medium',
 }) {
   const t = useContext(I18nContext);
 
@@ -49,7 +50,7 @@ export default function EditGasDisplay({
 
   const requireDappAcknowledgement =
     dappSuggestedGasFee && !dappSuggestedGasFeeAcknowledged;
-  const [estimateToUse, setEstimateToUse] = useState('medium');
+  const [estimateToUse, setEstimateToUse] = useState(defaultEstimateToUse);
 
   const [maxPriorityFee, setMaxPriorityFee] = useState(
     gasFeeEstimates?.[estimateToUse]?.suggestedMaxPriorityFeePerGas,
@@ -137,6 +138,14 @@ export default function EditGasDisplay({
   );
   const bannerTotal = bannerTotalParts.value;
 
+  const [, { value: legacyBannerTotal }] = useCurrencyDisplay(
+    decGWEIToHexWEI(Number(gasPrice) * Number(gasLimit)),
+    {
+      numberOfDecimals,
+      currency,
+    },
+  );
+
   return (
     <div className="edit-gas-display">
       <div className="edit-gas-display__content">
@@ -174,19 +183,22 @@ export default function EditGasDisplay({
         )}
 
         <TransactionTotalBanner
-          total={bannerTotal}
-          detail={t('editGasTotalBannerSubtitle', [
-            <Typography
-              fontWeight={FONT_WEIGHT.BOLD}
-              tag="span"
-              key="secondary"
-            >
-              {maxFeeFiat}
-            </Typography>,
-            <Typography tag="span" key="primary">
-              {maxFeePrimary}
-            </Typography>,
-          ])}
+          total={process.env.SHOW_EIP_1559_UI ? bannerTotal : legacyBannerTotal}
+          detail={
+            process.env.SHOW_EIP_1559_UI &&
+            t('editGasTotalBannerSubtitle', [
+              <Typography
+                fontWeight={FONT_WEIGHT.BOLD}
+                tag="span"
+                key="secondary"
+              >
+                {maxFeeFiat}
+              </Typography>,
+              <Typography tag="span" key="primary">
+                {maxFeePrimary}
+              </Typography>,
+            ])
+          }
           timing=""
         />
         {requireDappAcknowledgement && (
@@ -284,6 +296,7 @@ EditGasDisplay.propTypes = {
   onEducationClick: PropTypes.func,
   dappSuggestedGasFee: PropTypes.number,
   dappOrigin: PropTypes.string,
+  defaultEstimateToUse: PropTypes.oneOf(['low', 'medium', 'high']),
 };
 
 EditGasDisplay.defaultProps = {

@@ -183,7 +183,9 @@ export default function EditGasDisplay({
         )}
 
         <TransactionTotalBanner
-          total={process.env.SHOW_EIP_1559_UI ? bannerTotal : legacyBannerTotal}
+          total={`~ ${
+            process.env.SHOW_EIP_1559_UI ? bannerTotal : legacyBannerTotal
+          }`}
           detail={
             process.env.SHOW_EIP_1559_UI &&
             t('editGasTotalBannerSubtitle', [

@@ -223,13 +223,21 @@ export default function EditGasDisplay({
           <RadioGroup
             name="gas-recommendation"
             options={[
-              { value: 'low', label: t('editGasLow'), recommended: false },
+              {
+                value: 'low',
+                label: t('editGasLow'),
+                recommended: defaultEstimateToUse === 'low',
+              },
               {
                 value: 'medium',
                 label: t('editGasMedium'),
-                recommended: false,
+                recommended: defaultEstimateToUse === 'medium',
               },
-              { value: 'high', label: t('editGasHigh'), recommended: false },
+              {
+                value: 'high',
+                label: t('editGasHigh'),
+                recommended: defaultEstimateToUse === 'high',
+              },
             ]}
             selectedValue={estimateToUse}
             onChange={(value) => {

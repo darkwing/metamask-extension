@@ -34,6 +34,7 @@ import { toBuffer } from '../../../shared/modules/buffer-utils';
 import TransactionDetail from '../../components/app/transaction-detail/transaction-detail.component';
 import TransactionDetailItem from '../../components/app/transaction-detail-item/transaction-detail-item.component';
 import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
+import GasTiming from '../../components/app/gas-timing/gas-timing.component';
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -382,6 +383,13 @@ export default class ConfirmTransactionBase extends Component {
                     type={SECONDARY}
                     value={hexTransactionFee}
                     hideLabel
+                  />
+                }
+                subTitle={
+                  <GasTiming
+                    maxPriorityFeePerGas={
+                      this.props?.txData?.maxPriorityFeePerGas
+                    }
                   />
                 }
               />,

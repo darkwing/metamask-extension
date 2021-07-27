@@ -178,7 +178,6 @@ export default function EditGasPopover({
   }
 
   const footerButtonText = confirmButtonText || t('save');
-
   return (
     <Popover
       title={title}
@@ -206,7 +205,9 @@ export default function EditGasPopover({
           <EditGasDisplayEducation />
         ) : (
           <>
-            <LoadingHeartBeat active={shouldAnimate} />
+            {process.env.IN_TEST === 'true' ? null : (
+              <LoadingHeartBeat active={shouldAnimate} />
+            )}
             <EditGasDisplay
               showEducationButton={showEducationButton}
               warning={warning}

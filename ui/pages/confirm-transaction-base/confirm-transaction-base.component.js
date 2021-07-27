@@ -95,6 +95,8 @@ export default class ConfirmTransactionBase extends Component {
     isEthGasPrice: PropTypes.bool,
     noGasPrice: PropTypes.bool,
     setDefaultHomeActiveTabName: PropTypes.func,
+    primaryTotalTextOverride: PropTypes.string,
+    secondaryTotalTextOverride: PropTypes.string,
   };
 
   state = {
@@ -265,6 +267,8 @@ export default class ConfirmTransactionBase extends Component {
       nextNonce,
       getNextNonce,
       txData,
+      primaryTotalTextOverride,
+      secondaryTotalTextOverride,
     } = this.props;
     const { t } = this.context;
 
@@ -317,13 +321,13 @@ export default class ConfirmTransactionBase extends Component {
                 txData.dappSuggestedGasFees ? (
                   <>
                     {t('transactionDetailDappGasHeading', [
-                        getRequestingOrigin(),
-                      ])}
+                      getRequestingOrigin(),
+                    ])}
                     <InfoTooltip
                       contentText={t('transactionDetailDappGasTooltip')}
                       position="top"
                       iconFillColor="#f66a0a"
-                    >\
+                    >
                       <i className="fa fa-info-circle" />
                     </InfoTooltip>
                   </>
@@ -336,11 +340,11 @@ export default class ConfirmTransactionBase extends Component {
                           <p>{t('transactionDetailGasTooltipIntro')}</p>
                           <p>{t('transactionDetailGasTooltipExplanation')}</p>
                           <p>
-                            <a 
-                           href="https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172"
-                           target="_blank"
-                           rel="noopener noreferrer"
-                           >
+                            <a
+                              href="https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
                               {t('transactionDetailGasTooltipConversion')}
                             </a>
                           </p>
@@ -381,10 +385,16 @@ export default class ConfirmTransactionBase extends Component {
                   hideLabel
                 />,
               ])}
+              subTitle={
+                <GasTiming
+                  maxPriorityFeePerGas={txData.txParams.maxPriorityFeePerGas}
+                  maxFeePerGas={txData.txParams.maxFeePerGas}
+                />
+              }
             />,
             <TransactionDetailItem
               key="total-item"
-              detailTitle={t('total')}
+              detailTitle={primaryTotalTextOverride || t('total')}
               detailText={
                 <UserPreferencedCurrencyDisplay
                   type={PRIMARY}
@@ -399,7 +409,10 @@ export default class ConfirmTransactionBase extends Component {
                   hideLabel
                 />
               }
-              subTitle={t('transactionDetailGasTotalSubtitle')}
+              subTitle={
+                secondaryTotalTextOverride ||
+                t('transactionDetailGasTotalSubtitle')
+              }
               subText={t('editGasSubTextAmount', [
                 <UserPreferencedCurrencyDisplay
                   key="gas-total-subtext"
@@ -409,56 +422,17 @@ export default class ConfirmTransactionBase extends Component {
                     getHexGasTotal({
                       gasPrice: txData.txParams.maxFeePerGas,
                       gasLimit: txData.txParams.gas,
-                    }))}
-                    hideLabel
-                  />,
-                ])}
-                subTitle={
-                  <GasTiming
-                    maxPriorityFeePerGas={txData.txParams.maxPriorityFeePerGas}
-                    maxFeePerGas={txData.txParams.maxFeePerGas}
-                  />
-                }
-              />,
-              <TransactionDetailItem
-                key="total-item"
-                detailTitle={t('total')}
-                detailText={
-                  <UserPreferencedCurrencyDisplay
-                    type={PRIMARY}
-                    value={hexTransactionTotal}
-                    hideLabel={false}
-                  />
-                }
-                detailTotal={
-                  <UserPreferencedCurrencyDisplay
-                    type={SECONDARY}
-                    value={hexTransactionTotal}
-                    hideLabel
-                  />
-                }
-                subTitle={t('transactionDetailGasTotalSubtitle')}
-                subText={t('editGasSubTextAmount', [
-                  <UserPreferencedCurrencyDisplay
-                    key="gas-total-subtext"
-                    type={SECONDARY}
-                    value={addHexes(
-                      txData.txParams.value,
-                      getHexGasTotal({
-                        gasPrice: txData.txParams.maxFeePerGas,
-                        gasLimit: txData.txParams.gas,
-                      }),
-                    )}
-                    hideLabel
-                  />,
-                ])}
-              />,
-            ]}
-          />
-          {nonceField}
-        </div>
-      );
-    }
+                    }),
+                  )}
+                  hideLabel
+                />,
+              ])}
+            />,
+          ]}
+        />
+        {nonceField}
+      </div>
+    );
   }
 
   renderData(functionType) {

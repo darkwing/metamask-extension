@@ -1,9 +1,6 @@
 import { connect } from 'react-redux';
 import { getShouldShowFiat } from '../../../selectors';
-import {
-  getNativeCurrency,
-  isEIP1559Network,
-} from '../../../ducks/metamask/metamask';
+import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { getHexGasTotal } from '../../../helpers/utils/confirm-tx.util';
 import { subtractHexes } from '../../../helpers/utils/conversions.util';
 import { sumHexes } from '../../../helpers/utils/transactions.util';
@@ -49,7 +46,6 @@ const mapStateToProps = (state, ownProps) => {
     hexGasTotal,
     priorityFee,
     baseFee: baseFeePerGas,
-    supportsEIP1559,
     isEIP1559Transaction: isEIP1559Transaction(transaction),
   };
 };

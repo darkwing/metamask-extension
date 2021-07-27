@@ -14,6 +14,7 @@ describe('SendContent Component', () => {
   const defaultProps = {
     showHexData: true,
     gasIsExcessive: false,
+    isEIP1559Network: true,
   };
 
   beforeEach(() => {

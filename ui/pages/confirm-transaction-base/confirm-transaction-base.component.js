@@ -394,7 +394,7 @@ export default class ConfirmTransactionBase extends Component {
             />,
             <TransactionDetailItem
               key="total-item"
-              detailTitle={primaryTotalTextOverride || t('total')}
+              detailTitle={t('total')}
               detailText={
                 <UserPreferencedCurrencyDisplay
                   type={PRIMARY}
@@ -409,10 +409,7 @@ export default class ConfirmTransactionBase extends Component {
                   hideLabel
                 />
               }
-              subTitle={
-                secondaryTotalTextOverride ||
-                t('transactionDetailGasTotalSubtitle')
-              }
+              subTitle={t('transactionDetailGasTotalSubtitle')}
               subText={t('editGasSubTextAmount', [
                 <UserPreferencedCurrencyDisplay
                   key="gas-total-subtext"

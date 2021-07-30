@@ -26,15 +26,12 @@ import {
   addHexes,
 } from '../helpers/utils/conversions.util';
 import { GAS_FORM_ERRORS } from '../helpers/constants/gas';
-<<<<<<< HEAD
 import {
   getShouldShowFiat,
   getSelectedAccount,
   txDataSelector,
 } from '../selectors';
-=======
 import { isEIP1559Network } from '../ducks/metamask/metamask';
->>>>>>> 4b3d4318b (Fixing up tests and add back old custom gas modal for non-eip1559 compliant networks)
 import { useCurrencyDisplay } from './useCurrencyDisplay';
 import { useGasFeeEstimates } from './useGasFeeEstimates';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';

@@ -1977,6 +1977,14 @@ export function toggleAccountMenu() {
   };
 }
 
+export function toggleShowLoadingHeartbeatAnimation(value) {
+  console.log('setting loading animation toggle to: ', value);
+  return {
+    type: actionConstants.TOGGLE_LOADING_HEARTBEAT,
+    value,
+  };
+}
+
 export function setParticipateInMetaMetrics(val) {
   return (dispatch) => {
     log.debug(`background.setParticipateInMetaMetrics`);

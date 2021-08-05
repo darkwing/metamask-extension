@@ -50,6 +50,7 @@ export default function reduceApp(state = {}, action) {
     openMetaMaskTabs: {},
     currentWindowTab: {},
     showWhatsNewPopup: true,
+    showLoadingHeartbeatAnimation: false,
     singleExceptions: {
       testKey: null,
     },
@@ -356,6 +357,12 @@ export default function reduceApp(state = {}, action) {
           ...appState.singleExceptions,
           [action.value]: null,
         },
+      };
+
+    case actionConstants.TOGGLE_LOADING_HEARTBEAT:
+      return {
+        ...appState,
+        showLoadingHeartbeatAnimation: action.value,
       };
 
     default:

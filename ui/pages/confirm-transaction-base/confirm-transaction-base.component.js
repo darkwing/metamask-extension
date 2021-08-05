@@ -107,6 +107,7 @@ export default class ConfirmTransactionBase extends Component {
     setDefaultHomeActiveTabName: PropTypes.func,
     primaryTotalTextOverride: PropTypes.string,
     secondaryTotalTextOverride: PropTypes.string,
+    loadingAnimationIsShowing: PropTypes.bool,
   };
 
   state = {
@@ -772,6 +773,7 @@ export default class ConfirmTransactionBase extends Component {
       hideSenderToRecipient,
       showAccountInHeader,
       txData,
+      loadingAnimationIsShowing,
     } = this.props;
     const {
       submitting,
@@ -803,6 +805,9 @@ export default class ConfirmTransactionBase extends Component {
         functionType = t('contractInteraction');
       }
     }
+
+    console.log('Should disable button? ', loadingAnimationIsShowing);
+
     return (
       <ConfirmPageContainer
         fromName={fromName}
@@ -838,7 +843,7 @@ export default class ConfirmTransactionBase extends Component {
         lastTx={lastTx}
         ofText={ofText}
         requestsWaitingText={requestsWaitingText}
-        disabled={!valid || submitting}
+        disabled={!valid || submitting || loadingAnimationIsShowing}
         onEdit={() => this.handleEdit()}
         onCancelAll={() => this.handleCancelAll()}
         onCancel={() => this.handleCancel()}

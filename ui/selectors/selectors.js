@@ -539,6 +539,10 @@ export function getShowWhatsNewPopup(state) {
   return state.appState.showWhatsNewPopup;
 }
 
+export function getShowLoadingHeartbeatAnimation(state) {
+  return state.appState.showLoadingHeartbeatAnimation;
+}
+
 /**
  * Get an object of notification IDs and if they are allowed or not.
  * @param {Object} state

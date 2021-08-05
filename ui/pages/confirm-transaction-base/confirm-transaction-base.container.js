@@ -28,6 +28,7 @@ import {
   getIsEthGasPriceFetched,
   getShouldShowFiat,
   checkNetworkAndAccountSupports1559,
+  getShowLoadingHeartbeatAnimation,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { transactionMatchesNetwork } from '../../../shared/modules/transaction.utils';
@@ -60,6 +61,7 @@ const mapStateToProps = (state, ownProps) => {
   const { id: paramsTransactionId } = params;
   const isMainnet = getIsMainnet(state);
   const supportsEIP1599 = checkNetworkAndAccountSupports1559(state);
+  const loadingAnimationIsShowing = getShowLoadingHeartbeatAnimation(state);
   const { confirmTransaction, metamask } = state;
   const {
     ensResolutionsByAddress,
@@ -148,6 +150,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     balance,
     fromAddress,
+    loadingAnimationIsShowing,
     fromName,
     toAddress,
     toEns,

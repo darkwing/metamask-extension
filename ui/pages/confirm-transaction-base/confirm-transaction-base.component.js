@@ -50,6 +50,7 @@ import {
 
 import Typography from '../../components/ui/typography/typography';
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
+import HardwareConnectivityMessage from './hardware-connectivity/hardware-connectivity-message';
 
 import GasDetailsItem from './gas-details-item';
 import LowPriorityMessage from './low-priority-message';
@@ -143,6 +144,7 @@ export default class ConfirmTransactionBase extends Component {
     submitWarning: '',
     ethGasPriceWarning: '',
     editingGas: false,
+    showingHardwareConnectionContents: false,
   };
 
   componentDidUpdate(prevProps) {
@@ -581,6 +583,14 @@ export default class ConfirmTransactionBase extends Component {
             showDataInstruction={Boolean(txData.txParams?.data)}
           />
         ) : null}
+        {showLedgerSteps ? (
+          <HardwareConnectivityMessage
+            onClick={() => {
+              console.log('Opening the modal!');
+              this.setState({ showingHardwareConnectionContents: true });
+            }}
+          />
+        ) : null}
       </div>
     );
   }
@@ -918,6 +928,7 @@ export default class ConfirmTransactionBase extends Component {
       submitWarning,
       ethGasPriceWarning,
       editingGas,
+      showingHardwareConnectionContents,
     } = this.state;
 
     const { name } = methodData;
@@ -990,6 +1001,7 @@ export default class ConfirmTransactionBase extends Component {
         origin={txData.origin}
         ethGasPriceWarning={ethGasPriceWarning}
         editingGas={editingGas}
+        showingHardwareConnectionContents={showingHardwareConnectionContents}
         handleCloseEditGas={() => this.handleCloseEditGas()}
         currentTransaction={txData}
       />

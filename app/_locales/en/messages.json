@@ -1107,6 +1107,18 @@
   "hardwareWalletConnected": {
     "message": "Hardware wallet connected"
   },
+  "hardwareWalletConnectivityConnected": {
+    "message": "$1 is ready"
+  },
+  "hardwareWalletConnectivityHelperHeading": {
+    "message": "Connect your $1"
+  },
+  "hardwareWalletConnectivityNotConnected": {
+    "message": "$1 is not connected.  Click to connect"
+  },
+  "hardwareWalletConnectivityNotConnectedConversion": {
+    "message": "Click to connect"
+  },
   "hardwareWalletLegacyDescription": {
     "message": "(legacy)",
     "description": "Text representing the MEW path"

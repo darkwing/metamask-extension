@@ -72,6 +72,8 @@ export default class ConfirmPageContainer extends Component {
     showAddToAddressBookModal: PropTypes.func,
     contact: PropTypes.object,
     isOwnedAccount: PropTypes.bool,
+    // Hardware
+    showingHardwareConnectionContents: PropTypes.bool,
   };
 
   render() {

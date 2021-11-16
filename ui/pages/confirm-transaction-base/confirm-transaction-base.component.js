@@ -1001,7 +1001,7 @@ export default class ConfirmTransactionBase extends Component {
         origin={txData.origin}
         ethGasPriceWarning={ethGasPriceWarning}
         editingGas={editingGas}
-        showingHardwareConnectionContents={showingHardwareConnectionContents}
+        showingHardwareConnectionContents={true /*showingHardwareConnectionContents*/}
         handleCloseEditGas={() => this.handleCloseEditGas()}
         currentTransaction={txData}
       />

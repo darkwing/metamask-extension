@@ -9,12 +9,17 @@ import { openAlert as displayInvalidCustomNetworkAlert } from '../../../ducks/al
 import {
   NETWORK_TYPE_RPC,
   LOCALHOST_RPC_URL,
+  NATIVE_CURRENCY_TOKEN_IMAGE_MAP,
 } from '../../../../shared/constants/network';
+
 import { isPrefixedFormattedHexString } from '../../../../shared/modules/network.utils';
 
 import ColorIndicator from '../../ui/color-indicator';
 import { COLORS, SIZES } from '../../../helpers/constants/design-system';
-import { getShowTestNetworks } from '../../../selectors';
+import {
+  getShowTestNetworks,
+  getNativeCurrencyImage,
+} from '../../../selectors';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import {
@@ -40,10 +45,16 @@ const DROP_DOWN_MENU_ITEM_STYLE = {
 };
 
 function mapStateToProps(state) {
+  const frequentRpcListDetail = (
+    state.metamask.frequentRpcListDetail || []
+  ).map((detail) => {
+    return { ...detail, image: NATIVE_CURRENCY_TOKEN_IMAGE_MAP[detail.ticker] };
+  });
+
   return {
     provider: state.metamask.provider,
     shouldShowTestNetworks: getShowTestNetworks(state),
-    frequentRpcListDetail: state.metamask.frequentRpcListDetail || [],
+    frequentRpcListDetail,
     networkDropdownOpen: state.appState.networkDropdownOpen,
     showTestnetMessageInDropdown: state.metamask.showTestnetMessageInDropdown,
   };
@@ -155,7 +166,7 @@ class NetworkDropdown extends Component {
     const reversedRpcListDetail = rpcListDetail.slice().reverse();
 
     return reversedRpcListDetail.map((entry) => {
-      const { rpcUrl, chainId, ticker = 'ETH', nickname = '' } = entry;
+      const { rpcUrl, chainId, ticker = 'ETH', nickname = '', image } = entry;
       const isCurrentRpcTarget =
         provider.type === NETWORK_TYPE_RPC && rpcUrl === provider.rpcUrl;
 
@@ -166,6 +177,25 @@ class NetworkDropdown extends Component {
       if (opts.isLocalHost) {
         borderColor = 'localhost';
       }
+
+      const networkImage = image ? (
+        <img
+          src={image}
+          alt=""
+          style={{
+            margin: '0 14px 0 14px',
+            width: '12px',
+            height: '12px',
+          }}
+        />
+      ) : (
+        <ColorIndicator
+          color={opts.isLocalHost ? 'localhost' : COLORS.UI2}
+          size={SIZES.LG}
+          type={ColorIndicator.TYPES.FILLED}
+          borderColor={borderColor}
+        />
+      );
 
       return (
         <DropdownMenuItem
@@ -189,12 +219,7 @@ class NetworkDropdown extends Component {
           ) : (
             <div className="network-check__transparent">✓</div>
           )}
-          <ColorIndicator
-            color={opts.isLocalHost ? 'localhost' : COLORS.UI2}
-            size={SIZES.LG}
-            type={ColorIndicator.TYPES.FILLED}
-            borderColor={borderColor}
-          />
+          {networkImage}
           <span
             className="network-name-item"
             style={{

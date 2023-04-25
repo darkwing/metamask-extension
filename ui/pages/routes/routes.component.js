@@ -34,6 +34,7 @@ import {
   AppHeader as MultichainAppHeader,
   AccountListMenu,
   NetworkListMenu,
+  AccountDetails,
 } from '../../components/multichain';
 import UnlockPage from '../unlock-page';
 import Alerts from '../../components/app/alerts';
@@ -136,6 +137,7 @@ export default class Routes extends Component {
     toggleAccountMenu: PropTypes.func,
     isNetworkMenuOpen: PropTypes.bool,
     toggleNetworkMenu: PropTypes.func,
+    accountDetailsAddress: PropTypes.string,
   };
 
   static contextTypes = {
@@ -441,6 +443,7 @@ export default class Routes extends Component {
       toggleAccountMenu,
       isNetworkMenuOpen,
       toggleNetworkMenu,
+      accountDetailsAddress,
     } = this.props;
     const loadMessage =
       loadingMessage || isNetworkLoading
@@ -506,6 +509,9 @@ export default class Routes extends Component {
         ) : null}
         {process.env.MULTICHAIN && isNetworkMenuOpen ? (
           <NetworkListMenu onClose={() => toggleNetworkMenu()} />
+        ) : null}
+        {process.env.MULTICHAIN && accountDetailsAddress ? (
+          <AccountDetails address={accountDetailsAddress} />
         ) : null}
         <div className="main-container-wrapper">
           {isLoading ? <Loading loadingMessage={loadMessage} /> : null}

@@ -59,6 +59,7 @@ function mapStateToProps(state) {
     completedOnboarding,
     isAccountMenuOpen: state.metamask.isAccountMenuOpen,
     isNetworkMenuOpen: state.metamask.isNetworkMenuOpen,
+    accountDetailsAddress: state.metamask.accountDetailsAddress,
   };
 }
 
